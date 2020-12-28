@@ -1,0 +1,24 @@
+name: Build
+on: [push]
+jobs:
+
+  deploy:
+    name: "Build"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          mkdir -p rpm
+          docker build -t flb .
+          ls -lh
+          docker run --rm -v ${PWD}/rpm:/output flb:latest
+
+      - name: upload-artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: fluent-bit-rpm
+          path: ${{ github.workspace }}/rpm
