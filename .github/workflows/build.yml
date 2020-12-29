@@ -12,13 +12,12 @@ jobs:
 
       - name: build
         run: |
-          mkdir -p rpm
-          docker build -t flb .
-          ls -lh
-          docker run --rm -v ${PWD}/rpm:/output flb:latest
+          mkdir -p {sources,rpm}
+          docker build --build-arg FLB_PREFIX=v --build-arg FLB_VERSION=1.6.7 -t flb .
+          docker run --rm -v ${PWD}/rpm:/output -e FLB_VERSION=1.6.7 flb:latest
 
       - name: upload-artifact
         uses: actions/upload-artifact@v2
         with:
-          name: fluent-bit-rpm
+          name: fluent-bit-centos7
           path: ${{ github.workspace }}/rpm
